@@ -24,7 +24,7 @@ const ticketRoutes = require('./routes/ticketRoutes');
 app.use('/api/users', userRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.get("/",(req,res)=>{
-  res.send(`Hello User Server Sucessfully Running On Port : ${PORT}`)
+  res.send(`Hello ${process.env.JWT_SECRET} User Server Sucessfully Running On Port : ${PORT}`)
 })
 
 const PORT = process.env.PORT || 5000;

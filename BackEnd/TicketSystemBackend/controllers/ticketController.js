@@ -2,6 +2,7 @@ const Ticket = require('../models/Ticket');
 
 const createTicket = async (req, res) => {
     const { title, description, attachments } = req.body;
+    console.log("title, description, attachments",title, description, attachments, req.body)
     const createdBy = req.user.id;
 
     try {
