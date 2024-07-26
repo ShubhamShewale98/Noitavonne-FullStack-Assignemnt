@@ -1,16 +1,44 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../slices/userSlice';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
+
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
+    const navigate = useNavigate(); 
+    const { user } = useSelector((state) => state.user);
 
-    const handleSubmit = (e) => {
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(loginUser({ username, password }));
+     
+        try {
+            const actionResult = dispatch(loginUser({ username, password }));
+            const response = await actionResult; // actionResult is a Promise
+
+            if (response.error) {
+                console.error('Login failed:', response.error);
+                enqueueSnackbar(`Login failed: ${response.error.message}`,{ variant: 'error' })
+            } else {
+              
+                if(response.payload.token){
+                    console.log('Logged in successfully:', response);
+                    enqueueSnackbar('Logged in successfully',{ variant: 'success' })
+                    navigate("/")
+                }
+               
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
+        
+        
     };
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

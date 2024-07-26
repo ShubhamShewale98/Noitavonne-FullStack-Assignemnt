@@ -1,15 +1,17 @@
 const Ticket = require('../models/Ticket');
 
 const createTicket = async (req, res) => {
-    const { title, description, attachments } = req.body;
-    console.log("title, description, attachments",title, description, attachments, req.body)
+    const { title, description } = req.body;
     const createdBy = req.user.id;
+
+    // Extract attachment file paths from req.files
+    const attachments = req.files.map(file => file.path);
 
     try {
         const ticket = new Ticket({ title, description, createdBy, attachments });
         await ticket.save();
 
-        res.status(201).json({ msg: 'Ticket created successfully' });
+        res.status(201).json({ msg: 'Ticket created successfully', ticket });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

@@ -14,6 +14,18 @@ const registerUser = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+const getTechSupportUser = async (req, res) => {
+   
+   
+    try {
+        let userData = await User.find({role:"tech_support"})
+        // console.log("userData",userData)
+        res.json({users:userData});
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+    
+};
 
 const loginUser = async (req, res) => {
     const { username, password } = req.body;
@@ -27,10 +39,10 @@ const loginUser = async (req, res) => {
 
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        res.json({ token, role: user.role });
+        res.json({ token, role: user.role , name: user.username});
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
-module.exports = { registerUser, loginUser };
+module.exports = { registerUser, loginUser ,getTechSupportUser };

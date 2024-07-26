@@ -7,7 +7,7 @@ const ticketSchema = new mongoose.Schema({
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     replies: [{ type: String }],
-    attachments: [{ type: String }],
+    attachments: [{ type: String , required: false}],
 });
 
 module.exports = mongoose.model('Ticket', ticketSchema);

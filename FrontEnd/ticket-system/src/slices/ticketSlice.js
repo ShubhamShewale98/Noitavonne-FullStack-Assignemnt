@@ -2,11 +2,19 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const createTicket = createAsyncThunk('tickets/create', async (ticketData, { getState }) => {
-    const { user } = getState().user;
+    // const { user } = getState().user;
+    const user = JSON.parse(localStorage.getItem("loggedInUser")) ;  
+
     console.log("ticketData",ticketData)
+    // data: {
+    //     firstName: 'Finn',
+    //     lastName: 'Williams'
+    //   }
+    // 'Content-Type': 'application/json'
+    var options = { content: ticketData };
     const response = await axios.post('http://localhost:5000/api/tickets', ticketData, {
         headers: {
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${user.token}`,            
             'Content-Type': 'multipart/form-data'
         },
     });
@@ -14,7 +22,9 @@ export const createTicket = createAsyncThunk('tickets/create', async (ticketData
 });
 
 export const fetchTickets = createAsyncThunk('tickets/fetch', async (_,{ getState }) => {
-    const { user } = getState().user;
+    // const { user } = getState().user;
+    const user = JSON.parse(localStorage.getItem("loggedInUser")) ;  
+
     const response = await axios.get('http://localhost:5000/api/tickets',{
         headers: { Authorization: `Bearer ${user.token}` },
     });

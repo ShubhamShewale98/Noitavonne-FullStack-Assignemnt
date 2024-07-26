@@ -1,66 +1,39 @@
-// import React, { useState } from 'react';
-// import { useDispatch } from 'react-redux';
-// import { registerUser } from '../slices/userSlice';
-
-// const Register = () => {
-//     const [username, setUsername] = useState('');
-//     const [password, setPassword] = useState('');
-//     const [role, setRole] = useState('end_user');
-//     const dispatch = useDispatch();
-
-//     const handleSubmit = (e) => {
-//         e.preventDefault();
-//         dispatch(registerUser({ username, password, role }));
-//     };
-
-//     return (
-//         <div className="container mx-auto">
-//             <h2>Register</h2>
-//             <form onSubmit={handleSubmit}>
-//                 <div>
-//                     <label>Username</label>
-//                     <input
-//                         type="text"
-//                         value={username}
-//                         onChange={(e) => setUsername(e.target.value)}
-//                     />
-//                 </div>
-//                 <div>
-//                     <label>Password</label>
-//                     <input
-//                         type="password"
-//                         value={password}
-//                         onChange={(e) => setPassword(e.target.value)}
-//                     />
-//                 </div>
-//                 <div>
-//                     <label>Role</label>
-//                     <select value={role} onChange={(e) => setRole(e.target.value)}>
-//                         <option value="end_user">End User</option>
-//                         <option value="tech_support">Tech Support</option>
-//                         <option value="admin">Admin</option>
-//                     </select>
-//                 </div>
-//                 <button type="submit">Register</button>
-//             </form>
-//         </div>
-//     );
-// };
-
-// export default Register;
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { registerUser } from '../slices/userSlice';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+
+import { SnackbarProvider, enqueueSnackbar } from 'notistack';
 
 const Register = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('end_user');
+    const navigate = useNavigate(); 
     const dispatch = useDispatch();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        dispatch(registerUser({ username, password, role }));
+       
+        try {
+            const actionResult =  dispatch(registerUser({ username, password, role }));;
+            const response = await actionResult; // actionResult is a Promise
+            console.error('response', response);
+            if (response.error) {
+                console.error('Login failed:', response.error);
+                enqueueSnackbar(`Login failed: ${response.error.message}`,{ variant: 'error' })
+            } else {
+              
+                if(response.payload.msg){
+                    console.log('Registration successfull', response);
+                    enqueueSnackbar('Registration successfull',{ variant: 'info' })
+                    navigate("/")
+                }
+               
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+        }
     };
 
     return (
